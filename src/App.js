@@ -1,24 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from 'react';
+import AccountsSelection from './components/accountsSelection';
+import Conversations from './components/conversations';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer">
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const [accountId, setAccountId] = useState();
+
+  if (accountId == null) return <AccountsSelection setAccountId={setAccountId} />;
+  return <Conversations accountId={accountId} setAccountId={setAccountId} />;
 }
 
 export default App;
