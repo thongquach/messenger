@@ -1,17 +1,18 @@
+import useFetch from 'react-fetch-hook';
+import Loading from '../common/Loading';
 import Account from './Account';
 
 function AccountsSelection({ setAccountId }) {
-  const accounts = [
-    { name: 'Thong Quach', email: 'thong.quach@gmail.com' },
-    { name: 'Phat Tran', email: 'phat.tran@gmail.com' }
-  ];
+  const { isLoading, data: accounts } = useFetch('/api/accounts');
 
+  if (isLoading) return <Loading />;
   return (
     <div>
       <h1>Select an Account</h1>
-      {accounts.map(({ name, email }) => (
-        <Account name={name} email={email} key={email} onClick={() => setAccountId(email)} />
-      ))}
+      {accounts &&
+        accounts.map(({ id, name }) => (
+          <Account name={name} id={id} key={id} onClick={() => setAccountId(id)} />
+        ))}
     </div>
   );
 }

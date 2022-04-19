@@ -1,8 +1,8 @@
-function Account({ name, email, onClick }) {
+function Account({ name, id, onClick }) {
   return (
     <button onClick={onClick}>
       <h4>{name}</h4>
-      <p>{email}</p>
+      <p>{id}</p>
     </button>
   );
 }

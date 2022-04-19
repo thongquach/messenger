@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import useInfinityScroll from '../useInfinityScroll/index';
+import useInfinityScroll from '../../utils/useInfinityScroll';
 
 const ITEMS = [...Array(100)].map((_, index) => {
   return { id: `id-${index}`, displayName: `item ${index + 1}` };
