@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import AccountsSelection from './components/accountsSelection';
 import Conversations from './components/conversations';
+import { AccountType } from './utils/types';
 
 function App() {
-  const [accountId, setAccountId] = useState<string>();
+  const [currAccount, setCurrAccount] = useState<AccountType | undefined>();
 
-  if (accountId === undefined) return <AccountsSelection setAccountId={setAccountId} />;
-  return <Conversations />;
+  if (currAccount === undefined) return <AccountsSelection setCurrAccount={setCurrAccount} />;
+  return <Conversations account={currAccount} setCurrAccount={setCurrAccount} />;
 }
 
 export default App;

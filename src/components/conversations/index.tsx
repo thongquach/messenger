@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import { AccountType } from '../../utils/types';
 import useInfinityScroll from '../../utils/useInfinityScroll';
 
 const ITEMS = [...Array(100)].map((_, index) => {
@@ -19,7 +20,12 @@ function MyList({ items }) {
   );
 }
 
-function Conversations() {
+type ConversationsProps = {
+  account: AccountType;
+  setCurrAccount: (account: AccountType) => void;
+};
+
+function Conversations({ account, setCurrAccount }: ConversationsProps) {
   const [items, appendItems] = useReducer((a, b) => a.concat(b), []);
 
   function wait(time) {
@@ -41,7 +47,9 @@ function Conversations() {
 
   const { loadMoreRef, containerRef } = useInfinityScroll(loadMore);
   return (
-    <div ref={containerRef} className="container">
+    <div ref={containerRef}>
+      <button onClick={() => setCurrAccount(undefined)}>Back</button>
+      <h2>Hello {account.name}</h2>
       <h1>loaded: {items.length} </h1>
       <MyList items={items} />
       {items.length < 1000 && <em ref={loadMoreRef}>loading…</em>}
