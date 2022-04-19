@@ -1,4 +1,4 @@
-import { useReducer } from 'react';
+import React, { useReducer } from 'react';
 import useInfinityScroll from '../../utils/useInfinityScroll';
 
 const ITEMS = [...Array(100)].map((_, index) => {
@@ -19,11 +19,11 @@ function MyList({ items }) {
   );
 }
 
-function Conversations({ accountId, setAccountId }) {
+function Conversations() {
   const [items, appendItems] = useReducer((a, b) => a.concat(b), []);
 
   function wait(time) {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
       setTimeout(() => {
         resolve();
       }, time);

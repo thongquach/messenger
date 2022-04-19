@@ -1,9 +1,11 @@
+import React from 'react';
 import useFetch from 'react-fetch-hook';
+import { AccountType } from '../../utils/types';
 import Loading from '../common/Loading';
 import Account from './Account';
 
 function AccountsSelection({ setAccountId }) {
-  const { isLoading, data: accounts } = useFetch('/api/accounts');
+  const { isLoading, data: accounts } = useFetch<AccountType[]>('/api/accounts');
 
   if (isLoading) return <Loading />;
   return (
