@@ -1,10 +1,16 @@
 import React from 'react';
+import { AccountType } from '../../utils/types';
 
-function Account({ name, id, onClick }) {
+type AccountProps = {
+  account: AccountType;
+  onClick: () => void;
+};
+
+function Account({ account, onClick }: AccountProps) {
   return (
     <button onClick={onClick}>
-      <h4>{name}</h4>
-      <p>{id}</p>
+      <h4>{account.name}</h4>
+      <p>{account.id}</p>
     </button>
   );
 }

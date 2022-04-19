@@ -3,9 +3,9 @@ import AccountsSelection from './components/accountsSelection';
 import Conversations from './components/conversations';
 
 function App() {
-  const [accountId, setAccountId] = useState();
+  const [accountId, setAccountId] = useState<string>();
 
-  if (accountId == null) return <AccountsSelection setAccountId={setAccountId} />;
+  if (accountId === undefined) return <AccountsSelection setAccountId={setAccountId} />;
   return <Conversations />;
 }
 
