@@ -12,9 +12,6 @@ export default function useInfinityScroll(onLoadMore) {
       const id = setTimeout(onLoadMore, 50);
       return () => clearTimeout(id);
     }
-
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return () => {};
   }, [visible, onLoadMore]);
 
   // unload current observer and set sentry visibility to false
