@@ -5,8 +5,8 @@ import Conversations from './components/conversations';
 import { AccountType, ConversationType } from './utils/types';
 
 function App() {
-  const [currAccount, setCurrAccount] = useState<AccountType | undefined>();
-  const [currConversation, setCurrConversation] = useState<ConversationType | undefined>();
+  const [currAccount, setCurrAccount] = useState<AccountType>();
+  const [currConversation, setCurrConversation] = useState<ConversationType>();
 
   if (currAccount === undefined) return <AccountsSelection setCurrAccount={setCurrAccount} />;
   return (

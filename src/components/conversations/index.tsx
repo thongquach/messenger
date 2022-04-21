@@ -12,7 +12,7 @@ import Chat from './chat';
 type ConversationsProps = {
   account: AccountType;
   setCurrAccount: SetAccountType;
-  conversation: ConversationType;
+  conversation?: ConversationType;
   setCurrConversation: SetConversationType;
 };
 

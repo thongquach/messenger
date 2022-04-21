@@ -4,7 +4,6 @@ import useFetch from 'react-fetch-hook';
 import {
   AccountType,
   ConversationsType,
-  ConversationType,
   SetAccountType,
   SetConversationType
 } from '../../../utils/types';

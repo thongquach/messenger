@@ -7,6 +7,7 @@ export default function useInfinityScroll(onLoadMore) {
   const [visible, setVisible] = useState(false);
 
   // synchronize sentry visibility with loadMore "effect"
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (visible) {
       const id = setTimeout(onLoadMore, 50);

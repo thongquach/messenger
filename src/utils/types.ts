@@ -3,7 +3,7 @@ export type AccountType = {
   id: string;
 };
 
-export type SetAccountType = (account: AccountType) => void;
+export type SetAccountType = (account: AccountType | undefined) => void;
 
 export type Message = {
   id: string;
@@ -25,4 +25,4 @@ export type ConversationsType = {
   sort: 'NEWEST_FIRST';
 };
 
-export type SetConversationType = (conversation: ConversationType) => void;
+export type SetConversationType = (conversation: ConversationType | undefined) => void;
