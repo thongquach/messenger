@@ -1,26 +1,40 @@
-import { Button, Col } from 'antd';
-import React from 'react';
+import { Button } from 'antd';
+import React, { useEffect } from 'react';
 import useFetch from 'react-fetch-hook';
-import { AccountType, ConversationType, SetAccountType } from '../../../utils/types';
+import {
+  AccountType,
+  ConversationsType,
+  ConversationType,
+  SetAccountType,
+  SetConversationType
+} from '../../../utils/types';
 import Loading from '../../common/Loading';
 
 type ConversationsNavigationProps = {
   account: AccountType;
-  setAccount: SetAccountType;
+  setCurrAccount: SetAccountType;
+  setCurrConversation: SetConversationType;
 };
 
 export default function ConversationsNavigation({
   account,
-  setAccount
+  setCurrAccount,
+  setCurrConversation
 }: ConversationsNavigationProps) {
-  const { isLoading, data: conversations } = useFetch<ConversationType[]>(
+  const { isLoading, data: conversations } = useFetch<ConversationsType>(
     `/api/account/${account.id}/conversations`
   );
+
+  useEffect(() => {
+    if (conversations !== undefined) {
+      setCurrConversation(conversations.rows[0]);
+    }
+  }, [conversations]);
 
   if (isLoading) return <Loading />;
   return (
     <>
-      <Button onClick={() => setAccount(undefined)}>Back</Button>
+      <Button onClick={() => setCurrAccount(undefined)}>Back</Button>
       <h2>Hello {account.name}</h2>
       <div>{JSON.stringify(conversations, undefined, 2)}</div>
     </>

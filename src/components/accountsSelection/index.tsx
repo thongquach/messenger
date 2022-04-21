@@ -6,10 +6,10 @@ import Loading from '../common/Loading';
 import Account from './Account';
 
 type AccountsSelectionProps = {
-  setAccount: SetAccountType;
+  setCurrAccount: SetAccountType;
 };
 
-function AccountsSelection({ setAccount }: AccountsSelectionProps) {
+function AccountsSelection({ setCurrAccount }: AccountsSelectionProps) {
   const { isLoading, data: accounts } = useFetch<AccountType[]>('/api/accounts');
 
   return (
@@ -21,7 +21,7 @@ function AccountsSelection({ setAccount }: AccountsSelectionProps) {
           accounts.map((account) => {
             const { name, id } = account;
             return (
-              <Account name={name} subtitle={id} onClick={() => setAccount(account)} key={id} />
+              <Account name={name} subtitle={id} onClick={() => setCurrAccount(account)} key={id} />
             );
           })}
       </Space>

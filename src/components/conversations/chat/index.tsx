@@ -1,6 +1,9 @@
+import { Card } from 'antd';
 import React, { useReducer } from 'react';
+import { AccountType, ConversationType } from '../../../utils/types';
 import useInfinityScroll from '../../../utils/useInfinityScroll';
 import Loading from '../../common/Loading';
+import ChatTitle from './ChatTitle';
 
 const ITEMS = [...Array(100)].map((_, index) => {
   return { id: `id-${index}`, displayName: `item ${index + 1}` };
@@ -20,7 +23,7 @@ function MyList({ items }) {
   );
 }
 
-function Chat() {
+function ChatTest() {
   const [items, appendItems] = useReducer((a, b) => a.concat(b), []);
 
   function wait(time) {
@@ -52,6 +55,18 @@ function Chat() {
       )}
     </div>
   );
+}
+
+type ChatProps = {
+  account: AccountType;
+  conversation: ConversationType | undefined;
+};
+
+function Chat({ account, conversation }: ChatProps) {
+  if (conversation === undefined) return <Loading />;
+  const receiver = conversation.participants.find((p) => p.id !== account.id);
+
+  return <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>{}</Card>;
 }
 
 export default Chat;

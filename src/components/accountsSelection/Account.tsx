@@ -1,6 +1,6 @@
-import { Avatar, Button, Col, Space, Typography } from 'antd';
+import { Button, Col, Row, Space, Typography } from 'antd';
 import React from 'react';
-import getInitials from '../../utils/getInitials';
+import InitialsAvatar from '../common/InitialsAvatar';
 
 type AccountProps = {
   name: string;
@@ -12,10 +12,14 @@ function Account({ name, subtitle, onClick }: AccountProps) {
   return (
     <Button onClick={onClick} style={{ height: '4em', width: '12em' }}>
       <Space style={{ display: 'flex', flexDirection: 'row' }}>
-        <Avatar size="large">{getInitials(name)}</Avatar>
+        <InitialsAvatar size="large" name={name} />
         <Col style={{ textAlign: 'left' }}>
-          <Typography.Text strong>{name}</Typography.Text>
-          <Typography>{subtitle}</Typography>
+          <Row>
+            <Typography.Text strong>{name}</Typography.Text>
+          </Row>
+          <Row>
+            <Typography.Text>{subtitle}</Typography.Text>
+          </Row>
         </Col>
       </Space>
     </Button>

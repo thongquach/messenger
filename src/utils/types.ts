@@ -2,6 +2,9 @@ export type AccountType = {
   name: string;
   id: string;
 };
+
+export type SetAccountType = (account: AccountType) => void;
+
 export type Message = {
   id: string;
   text: string;
@@ -15,6 +18,11 @@ export type ConversationType = {
   participants: AccountType[];
 };
 
-export type SetAccountType = (account: AccountType) => void;
+export type ConversationsType = {
+  cursor_next: string;
+  cursor_prev: string;
+  rows: ConversationType[];
+  sort: 'NEWEST_FIRST';
+};
 
-export type SetCurrentConversationType = (conversation: ConversationType) => void;
+export type SetConversationType = (conversation: ConversationType) => void;

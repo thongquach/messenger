@@ -5,11 +5,18 @@ import Conversations from './components/conversations';
 import { AccountType, ConversationType } from './utils/types';
 
 function App() {
-  const [currAccount, setAccount] = useState<AccountType | undefined>();
-  const [currentConversation, setCurrentConversation] = useState<ConversationType | undefined>();
+  const [currAccount, setCurrAccount] = useState<AccountType | undefined>();
+  const [currConversation, setCurrConversation] = useState<ConversationType | undefined>();
 
-  if (currAccount === undefined) return <AccountsSelection setAccount={setAccount} />;
-  return <Conversations account={currAccount} setAccount={setAccount} />;
+  if (currAccount === undefined) return <AccountsSelection setCurrAccount={setCurrAccount} />;
+  return (
+    <Conversations
+      account={currAccount}
+      conversation={currConversation}
+      setCurrAccount={setCurrAccount}
+      setCurrConversation={setCurrConversation}
+    />
+  );
 }
 
 export default App;
