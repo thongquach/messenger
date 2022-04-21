@@ -1,4 +1,4 @@
-import { Button, Card, Empty, Input } from 'antd';
+import { Button, Card, Empty, Input, Space } from 'antd';
 import React, { useReducer, useState } from 'react';
 import useFetch from 'react-fetch-hook';
 import { AccountType, ConversationType, MessageResponseType } from '../../../utils/types';
@@ -105,8 +105,8 @@ function Chat({ account, conversation }: ChatProps) {
   if (isLoading) return <Loading />;
 
   return (
-    <>
-      <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
+    <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
+      <Space direction="vertical" style={{ width: '100%' }}>
         {messagesResponse !== undefined &&
           messagesResponse.rows.map(({ text, sender, id }) => (
             <Message
@@ -116,10 +116,10 @@ function Chat({ account, conversation }: ChatProps) {
               isOwnMessage={account.id === sender.id}
             />
           ))}
-      </Card>
-      <Input onChange={(e) => setValue(e.target.value)} value={value} />
-      <Button onClick={handleSubmit}>Send</Button>
-    </>
+        <Input onChange={(e) => setValue(e.target.value)} value={value} />
+        <Button onClick={handleSubmit}>Send</Button>
+      </Space>
+    </Card>
   );
 }
 

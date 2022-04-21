@@ -1,4 +1,4 @@
-import { Col, Row, Space, Typography } from 'antd';
+import { Row, Space, Typography } from 'antd';
 import React from 'react';
 import InitialsAvatar from '../../common/InitialsAvatar';
 
@@ -15,7 +15,7 @@ function Message({ message, sender, isOwnMessage }: MessageProps) {
       style={{
         padding: '8px',
         borderRadius: '20px',
-        backgroundColor: isOwnMessage ? 'blue' : 'gray',
+        backgroundColor: isOwnMessage ? 'deepskyblue' : 'dimgray',
         color: 'white'
       }}>
       {message}
@@ -23,7 +23,7 @@ function Message({ message, sender, isOwnMessage }: MessageProps) {
   );
 
   return (
-    <Row>
+    <Row style={{ width: '100%', justifyContent: isOwnMessage ? 'flex-end' : 'flex-start' }}>
       <Space>
         {isOwnMessage ? (
           <>
