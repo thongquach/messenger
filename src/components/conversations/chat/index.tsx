@@ -1,8 +1,10 @@
 import { Card, Empty } from 'antd';
 import React, { useReducer } from 'react';
-import { AccountType, ConversationType } from '../../../utils/types';
+import useFetch from 'react-fetch-hook';
+import { AccountType, ConversationType, MessageResponseType } from '../../../utils/types';
 import Loading from '../../common/Loading';
 import ChatTitle from './ChatTitle';
+import Message from './Message';
 
 /*
 const ITEMS = [...Array(100)].map((_, index) => {
@@ -64,12 +66,28 @@ type ChatProps = {
 };
 
 function Chat({ account, conversation }: ChatProps) {
-  if (conversation === undefined) return <Loading />;
-
+  if (conversation === undefined) return <Empty />;
   const receiver = conversation.participants.find((p) => p.id !== account.id);
   if (receiver === undefined) return <Empty />;
 
-  return <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>{}</Card>;
+  const { isLoading, data: messagesResponse } = useFetch<MessageResponseType>(
+    `/api/account/${account.id}/conversation/${conversation.id}/messages`
+  );
+  if (isLoading) return <Loading />;
+
+  return (
+    <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
+      {messagesResponse !== undefined &&
+        messagesResponse.rows.map(({ text, sender, id }) => (
+          <Message
+            message={text}
+            sender={sender.name}
+            key={id}
+            isOwnMessage={account.id === sender.id}
+          />
+        ))}
+    </Card>
+  );
 }
 
 export default Chat;

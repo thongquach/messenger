@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import useFetch from 'react-fetch-hook';
 import {
   AccountType,
-  ConversationsType,
+  ConversationsResponseType,
   SetAccountType,
   SetConversationType
 } from '../../../utils/types';
@@ -20,22 +20,22 @@ export default function ConversationsNavigation({
   setCurrAccount,
   setCurrConversation
 }: ConversationsNavigationProps) {
-  const { isLoading, data: conversations } = useFetch<ConversationsType>(
+  const { isLoading, data: conversationsResponse } = useFetch<ConversationsResponseType>(
     `/api/account/${account.id}/conversations`
   );
 
   useEffect(() => {
-    if (conversations !== undefined) {
-      setCurrConversation(conversations.rows[0]);
+    if (conversationsResponse !== undefined) {
+      setCurrConversation(conversationsResponse.rows[0]);
     }
-  }, [conversations]);
+  }, [conversationsResponse]);
 
   if (isLoading) return <Loading />;
   return (
     <>
       <Button onClick={() => setCurrAccount(undefined)}>Back</Button>
       <h2>Hello {account.name}</h2>
-      <div>{JSON.stringify(conversations, undefined, 2)}</div>
+      <div>{JSON.stringify(conversationsResponse, undefined, 2)}</div>
     </>
   );
 }

@@ -3,13 +3,18 @@ export type AccountType = {
   id: string;
 };
 
-export type SetAccountType = (account: AccountType | undefined) => void;
-
 export type Message = {
   id: string;
   text: string;
   sender: AccountType;
   createdAt: string;
+};
+
+export type MessageResponseType = {
+  cursor_next: string;
+  cursor_prev: string;
+  rows: Message[];
+  sort: 'NEWEST_FIRST';
 };
 
 export type ConversationType = {
@@ -18,11 +23,12 @@ export type ConversationType = {
   participants: AccountType[];
 };
 
-export type ConversationsType = {
+export type ConversationsResponseType = {
   cursor_next: string;
   cursor_prev: string;
   rows: ConversationType[];
   sort: 'NEWEST_FIRST';
 };
 
+export type SetAccountType = (account: AccountType | undefined) => void;
 export type SetConversationType = (conversation: ConversationType | undefined) => void;
