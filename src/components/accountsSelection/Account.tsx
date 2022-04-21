@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import React from 'react';
 import { AccountType } from '../../utils/types';
 
@@ -8,10 +9,10 @@ type AccountProps = {
 
 function Account({ account, onClick }: AccountProps) {
   return (
-    <button onClick={onClick}>
+    <Button onClick={onClick}>
       <h4>{account.name}</h4>
       <p>{account.id}</p>
-    </button>
+    </Button>
   );
 }
 
