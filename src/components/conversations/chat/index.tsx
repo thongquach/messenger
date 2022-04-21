@@ -108,12 +108,11 @@ function Chat({ account, conversation }: ChatProps) {
     <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
       <Space direction="vertical" style={{ width: '100%' }}>
         {messagesResponse !== undefined &&
-          messagesResponse.rows.map(({ text, sender, id }) => (
+          messagesResponse.rows.map((message) => (
             <Message
-              message={text}
-              sender={sender.name}
-              key={id}
-              isOwnMessage={account.id === sender.id}
+              message={message}
+              key={message.id}
+              isOwnMessage={account.id === message.sender.id}
             />
           ))}
         <Input onChange={(e) => setValue(e.target.value)} value={value} />

@@ -1,43 +1,32 @@
-import { Row, Space, Typography } from 'antd';
+import { Space, Typography } from 'antd';
 import React from 'react';
+import { MessageType } from '../../../utils/types';
 import InitialsAvatar from '../../common/InitialsAvatar';
 
 type MessageProps = {
-  message: string;
-  sender: string;
+  message: MessageType;
   isOwnMessage: boolean;
 };
 
-function Message({ message, sender, isOwnMessage }: MessageProps) {
-  const avatar = <InitialsAvatar name={sender} size="large" />;
-  const messageContent = (
-    <Typography.Text
-      style={{
-        padding: '8px',
-        borderRadius: '20px',
-        backgroundColor: isOwnMessage ? 'deepskyblue' : 'dimgray',
-        color: 'white'
-      }}>
-      {message}
-    </Typography.Text>
-  );
+function Message({ message, isOwnMessage }: MessageProps) {
+  const { text, sender, createdAt } = message;
+  const date = new Date(Number(createdAt));
 
   return (
-    <Row style={{ width: '100%', justifyContent: isOwnMessage ? 'flex-end' : 'flex-start' }}>
-      <Space>
-        {isOwnMessage ? (
-          <>
-            {messageContent}
-            {avatar}
-          </>
-        ) : (
-          <>
-            {avatar}
-            {messageContent}
-          </>
-        )}
-      </Space>
-    </Row>
+    <Space style={{ width: '100%', flexDirection: isOwnMessage ? 'row-reverse' : 'row' }}>
+      <InitialsAvatar name={sender.name} size="large" />
+      <Typography.Text
+        style={{
+          padding: '8px',
+          borderRadius: '20px',
+          backgroundColor: isOwnMessage ? 'deepskyblue' : 'dimgray',
+          color: 'white'
+        }}>
+        {text}
+      </Typography.Text>
+      <Typography.Text
+        style={{ color: 'dimgray' }}>{`${date.getHours()}:${date.getMinutes()}`}</Typography.Text>
+    </Space>
   );
 }
 

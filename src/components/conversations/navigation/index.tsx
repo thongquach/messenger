@@ -76,9 +76,9 @@ export default function ConversationsNavigation({
           <Conversation
             key={item.id}
             name={getDisplayName(item)}
-            text={item?.lastMessage?.text}
+            text={item?.lastMessage?.text || ''}
             onClick={() => setCurrConversation(item)}
-            createdAt={item?.lastMessage?.createdAt}
+            createdAt={item.lastMessage?.createdAt || ''}
             active={item.id === conversation?.id}
           />
         )}
