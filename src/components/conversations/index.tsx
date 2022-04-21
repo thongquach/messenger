@@ -27,6 +27,7 @@ function Conversations({
       <Col span={6}>
         <ConversationsNavigation
           account={account}
+          conversation={conversation}
           setCurrAccount={setCurrAccount}
           setCurrConversation={setCurrConversation}
         />

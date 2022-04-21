@@ -1,4 +1,4 @@
-import { Button, Card, Space } from 'antd';
+import { List } from 'antd';
 
 import React, { useEffect } from 'react';
 
@@ -10,18 +10,25 @@ import {
   SetAccountType,
   SetConversationType
 } from '../../../utils/types';
-import Account from '../../accountsSelection/Account';
 import Loading from '../../common/Loading';
+import Conversation from './Conversation';
 import Header from './Header';
 
 type ConversationsNavigationProps = {
   account: AccountType;
   setCurrAccount: SetAccountType;
+  conversation?: ConversationType;
   setCurrConversation: SetConversationType;
+};
+
+const getConversationDisplayName = (item: ConversationType, partnerId: string): string => {
+  const targetAccount = item?.participants.find((participant) => participant.id !== partnerId);
+  return targetAccount?.name || '';
 };
 
 export default function ConversationsNavigation({
   account,
+  conversation,
   setCurrAccount,
   setCurrConversation
 }: ConversationsNavigationProps) {
@@ -29,33 +36,38 @@ export default function ConversationsNavigation({
     `/api/account/${account.id}/conversations`
   );
 
-  const getConversationDisplayName = (conversation: ConversationType): string => {
-    const targetAccount = conversation?.participants.find(
-      (participant) => participant.id !== account.id
-    );
-    return targetAccount?.name || '';
-  };
+  useEffect(() => {
+    if (conversationsResponse !== undefined) {
+      setCurrConversation(conversationsResponse.rows[0]);
+    }
+  }, [conversationsResponse]);
 
   if (isLoading) return <Loading />;
   return (
-    <Card
-      title={
-        <Header
-          onBack={() => {
-            setCurrAccount(undefined);
-          }}
-        />
-      }>
-      <Space direction="vertical">
-        {conversationsResponse?.rows.map((conversation) => (
-          <Account
-            key={conversation.id}
-            name={getConversationDisplayName(conversation)}
-            subtitle={conversation.lastMessage.text}
-            onClick={() => setCurrConversation(conversation)}
+    <div>
+      <List
+        header={
+          <Header
+            onBack={() => {
+              setCurrAccount(undefined);
+            }}
           />
-        ))}
-      </Space>
-    </Card>
+        }
+        rowKey={(item) => item.id}
+        bordered
+        split
+        dataSource={conversationsResponse?.rows}
+        renderItem={(item) => (
+          <Conversation
+            key={item.id}
+            name={getConversationDisplayName(item, account.id)}
+            text={item?.lastMessage?.text}
+            onClick={() => setCurrConversation(item)}
+            createdAt={item?.lastMessage?.createdAt}
+            active={item.id === conversation?.id}
+          />
+        )}
+      />
+    </div>
   );
 }

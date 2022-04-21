@@ -6,7 +6,7 @@ type NavigationHeaderProps = {
   onBack?: () => void;
 };
 
-export default function ConversationsNavigation({ onBack }: NavigationHeaderProps) {
+function Header({ onBack }: NavigationHeaderProps) {
   return (
     <Row>
       <Col span={4}>
@@ -20,3 +20,5 @@ export default function ConversationsNavigation({ onBack }: NavigationHeaderProp
     </Row>
   );
 }
+
+export default Header;
