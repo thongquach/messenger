@@ -1,4 +1,4 @@
-import { Card, Empty, Input } from 'antd';
+import { Button, Card, Empty, Input } from 'antd';
 import React, { useReducer, useState } from 'react';
 import useFetch from 'react-fetch-hook';
 import { AccountType, ConversationType, MessageResponseType } from '../../../utils/types';
@@ -63,34 +63,63 @@ function Chat() {
 type ChatProps = {
   account: AccountType;
   conversation?: ConversationType;
-  submit: string;
 };
 
-function Chat({ account, conversation, submit }: ChatProps) {
+function Chat({ account, conversation }: ChatProps) {
   if (conversation === undefined) return <Empty />;
   const receiver = conversation.participants.find((p) => p.id !== account.id);
   if (receiver === undefined) return <Empty />;
 
+  const [value, setValue] = useState('');
+  const [submit, setSubmit] = useState(false);
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ text: value })
+  };
+  const handleSubmit = () => {
+    if (!value) {
+      return;
+    }
+    setSubmit(true);
+
+    setTimeout(() => {
+      setSubmit(false);
+      setValue('');
+    }, 1000);
+  };
+
+  useFetch(`/api/account/${account.id}/conversation/${conversation.id}/messages`, requestOptions, {
+    depends: [submit]
+  });
+
   const { isLoading, data: messagesResponse } = useFetch<MessageResponseType>(
-    `/api/account/${account.id}/conversation/${conversation.id}/messages?pageSize=10`,
+    `/api/account/${account.id}/conversation/${conversation.id}/messages?pageSize=20`,
     {
-      depends: [submit]
+      depends: [!submit]
     }
   );
   if (isLoading) return <Loading />;
 
   return (
-    <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
-      {messagesResponse !== undefined &&
-        messagesResponse.rows.map(({ text, sender, id }) => (
-          <Message
-            message={text}
-            sender={sender.name}
-            key={id}
-            isOwnMessage={account.id === sender.id}
-          />
-        ))}
-    </Card>
+    <>
+      <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
+        {messagesResponse !== undefined &&
+          messagesResponse.rows.map(({ text, sender, id }) => (
+            <Message
+              message={text}
+              sender={sender.name}
+              key={id}
+              isOwnMessage={account.id === sender.id}
+            />
+          ))}
+      </Card>
+      <Input onChange={(e) => setValue(e.target.value)} value={value} />
+      <Button onClick={handleSubmit}>Send</Button>
+    </>
   );
 }
 
