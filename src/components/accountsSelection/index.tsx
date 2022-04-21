@@ -1,14 +1,14 @@
 import React from 'react';
 import useFetch from 'react-fetch-hook';
-import { AccountType } from '../../utils/types';
+import { AccountType, SetAccountType } from '../../utils/types';
 import Loading from '../common/Loading';
 import Account from './Account';
 
 type AccountsSelectionProps = {
-  setCurrAccount: (account: AccountType) => void;
+  setAccount: SetAccountType;
 };
 
-function AccountsSelection({ setCurrAccount }: AccountsSelectionProps) {
+function AccountsSelection({ setAccount }: AccountsSelectionProps) {
   const { isLoading, data: accounts } = useFetch<AccountType[]>('/api/accounts');
 
   if (isLoading) return <Loading />;
@@ -17,7 +17,7 @@ function AccountsSelection({ setCurrAccount }: AccountsSelectionProps) {
       <h1>Select an Account</h1>
       {accounts &&
         accounts.map((account) => (
-          <Account account={account} key={account.id} onClick={() => setCurrAccount(account)} />
+          <Account account={account} key={account.id} onClick={() => setAccount(account)} />
         ))}
     </div>
   );
