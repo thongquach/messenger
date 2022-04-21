@@ -1,4 +1,4 @@
-import { Card } from 'antd';
+import { Button, Card, Space } from 'antd';
 
 import React, { useEffect } from 'react';
 
@@ -35,27 +35,23 @@ export default function ConversationsNavigation({
     return targetAccount?.name;
   };
 
-  useEffect(() => {
-    if (conversationsResponse !== undefined) {
-      setCurrConversation(conversationsResponse.rows[0]);
-    }
-  }, [conversationsResponse]);
-
   if (isLoading) return <Loading />;
   return (
-    <div>
-      <Card
-        title={
-          <Header
-            onBack={() => {
-              setCurrAccount(undefined);
-            }}
-          />
-        }>
+    <Card
+      title={
+        <Header
+          onBack={() => {
+            setCurrAccount(undefined);
+          }}
+        />
+      }>
+      <Space direction="vertical">
         {conversationsResponse?.rows.map((conversation) => (
-          <p key={conversation.id}>{getConversationDisplayName(conversation)}</p>
+          <Button key={conversation.id} onClick={() => setCurrConversation(conversation)}>
+            {getConversationDisplayName(conversation)}
+          </Button>
         ))}
-      </Card>
-    </div>
+      </Space>
+    </Card>
   );
 }
