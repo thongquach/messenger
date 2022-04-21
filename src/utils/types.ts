@@ -3,7 +3,7 @@ export type AccountType = {
   id: string;
 };
 
-export type Message = {
+export type MessageType = {
   id: string;
   text: string;
   sender: AccountType;
@@ -13,13 +13,13 @@ export type Message = {
 export type MessageResponseType = {
   cursor_next: string;
   cursor_prev: string;
-  rows: Message[];
+  rows: MessageType[];
   sort: 'NEWEST_FIRST';
 };
 
 export type ConversationType = {
   id: string;
-  lastMessage: Message;
+  lastMessage?: MessageType;
   participants: AccountType[];
 };
 
