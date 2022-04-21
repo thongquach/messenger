@@ -44,9 +44,9 @@ export default function ConversationsNavigation({
 
   const getSearchedConversations = () => {
     if (!searchText) return conversationsResponse?.rows;
-    return (conversationsResponse?.rows || []).filter((item) => {
-      return getDisplayName(item).toLowerCase().includes(searchText.toLowerCase());
-    });
+    return (conversationsResponse?.rows || []).filter((item) =>
+      getDisplayName(item).toLowerCase().includes(searchText.toLowerCase())
+    );
   };
 
   useEffect(() => {
