@@ -1,17 +1,26 @@
-import { Button } from 'antd';
+import { Avatar, Button, Space, Typography } from 'antd';
 import React from 'react';
-import { AccountType } from '../../utils/types';
+import getInitials from '../../utils/getInitials';
+import { StyledAccountInfo } from './\bStyledAccountsSelection';
 
 type AccountProps = {
-  account: AccountType;
+  name: string;
+  subtitle: string;
   onClick: () => void;
 };
 
-function Account({ account, onClick }: AccountProps) {
+function Account({ name, subtitle, onClick }: AccountProps) {
   return (
-    <Button onClick={onClick}>
-      <h4>{account.name}</h4>
-      <p>{account.id}</p>
+    <Button
+      onClick={onClick}
+      style={{ height: '4em', width: '12em', display: 'flex', flexDirection: 'row' }}>
+      <Space>
+        <Avatar size="large">{getInitials(name)}</Avatar>
+        <StyledAccountInfo>
+          <Typography.Text strong>{name}</Typography.Text>
+          <Typography>{subtitle}</Typography>
+        </StyledAccountInfo>
+      </Space>
     </Button>
   );
 }

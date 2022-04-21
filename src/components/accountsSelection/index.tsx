@@ -1,7 +1,9 @@
+import { Typography } from 'antd';
 import React from 'react';
 import useFetch from 'react-fetch-hook';
 import { AccountType, SetAccountType } from '../../utils/types';
 import Loading from '../common/Loading';
+import { StyledAccountsContainer } from './\bStyledAccountsSelection';
 import Account from './Account';
 
 type AccountsSelectionProps = {
@@ -13,13 +15,14 @@ function AccountsSelection({ setAccount }: AccountsSelectionProps) {
 
   if (isLoading) return <Loading />;
   return (
-    <div>
-      <h1>Select an Account</h1>
+    <StyledAccountsContainer>
+      <Typography.Title>Select an Account</Typography.Title>
       {accounts &&
-        accounts.map((account) => (
-          <Account account={account} key={account.id} onClick={() => setAccount(account)} />
-        ))}
-    </div>
+        accounts.map((account) => {
+          const { name, id } = account;
+          return <Account name={name} subtitle={id} key={id} onClick={() => setAccount(account)} />;
+        })}
+    </StyledAccountsContainer>
   );
 }
 
