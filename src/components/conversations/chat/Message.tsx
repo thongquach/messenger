@@ -1,4 +1,4 @@
-import { Row, Typography } from 'antd';
+import { Col, Row, Space, Typography } from 'antd';
 import React from 'react';
 import InitialsAvatar from '../../common/InitialsAvatar';
 
@@ -9,18 +9,34 @@ type MessageProps = {
 };
 
 function Message({ message, sender, isOwnMessage }: MessageProps) {
-  if (isOwnMessage)
-    return (
-      <Row>
-        <Typography.Text>{message}</Typography.Text>
-        <InitialsAvatar name={sender} />
-      </Row>
-    );
+  const avatar = <InitialsAvatar name={sender} size="large" />;
+  const messageContent = (
+    <Typography.Text
+      style={{
+        padding: '8px',
+        borderRadius: '20px',
+        backgroundColor: isOwnMessage ? 'blue' : 'gray',
+        color: 'white'
+      }}>
+      {message}
+    </Typography.Text>
+  );
 
   return (
     <Row>
-      <InitialsAvatar name={sender} />
-      <Typography.Text>{message}</Typography.Text>
+      <Space>
+        {isOwnMessage ? (
+          <>
+            {messageContent}
+            {avatar}
+          </>
+        ) : (
+          <>
+            {avatar}
+            {messageContent}
+          </>
+        )}
+      </Space>
     </Row>
   );
 }
