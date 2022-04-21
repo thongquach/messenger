@@ -1,13 +1,17 @@
-import { Button } from 'antd';
+import { Card } from 'antd';
+
 import React, { useEffect } from 'react';
+
 import useFetch from 'react-fetch-hook';
 import {
   AccountType,
   ConversationsResponseType,
+  ConversationType,
   SetAccountType,
   SetConversationType
 } from '../../../utils/types';
 import Loading from '../../common/Loading';
+import Header from './Header';
 
 type ConversationsNavigationProps = {
   account: AccountType;
@@ -24,6 +28,13 @@ export default function ConversationsNavigation({
     `/api/account/${account.id}/conversations`
   );
 
+  const getConversationDisplayName = (conversation: ConversationType): string | undefined => {
+    const targetAccount = conversation?.participants.find(
+      (participant) => participant.id !== account.id
+    );
+    return targetAccount?.name;
+  };
+
   useEffect(() => {
     if (conversationsResponse !== undefined) {
       setCurrConversation(conversationsResponse.rows[0]);
@@ -32,10 +43,19 @@ export default function ConversationsNavigation({
 
   if (isLoading) return <Loading />;
   return (
-    <>
-      <Button onClick={() => setCurrAccount(undefined)}>Back</Button>
-      <h2>Hello {account.name}</h2>
-      <div>{JSON.stringify(conversationsResponse, undefined, 2)}</div>
-    </>
+    <div>
+      <Card
+        title={
+          <Header
+            onBack={() => {
+              setCurrAccount(undefined);
+            }}
+          />
+        }>
+        {conversationsResponse?.rows.map((conversation) => (
+          <p key={conversation.id}>{getConversationDisplayName(conversation)}</p>
+        ))}
+      </Card>
+    </div>
   );
 }
