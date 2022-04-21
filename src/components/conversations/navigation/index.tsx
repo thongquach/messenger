@@ -10,6 +10,7 @@ import {
   SetAccountType,
   SetConversationType
 } from '../../../utils/types';
+import Account from '../../accountsSelection/Account';
 import Loading from '../../common/Loading';
 import Header from './Header';
 
@@ -28,11 +29,11 @@ export default function ConversationsNavigation({
     `/api/account/${account.id}/conversations`
   );
 
-  const getConversationDisplayName = (conversation: ConversationType): string | undefined => {
+  const getConversationDisplayName = (conversation: ConversationType): string => {
     const targetAccount = conversation?.participants.find(
       (participant) => participant.id !== account.id
     );
-    return targetAccount?.name;
+    return targetAccount?.name || '';
   };
 
   if (isLoading) return <Loading />;
@@ -47,9 +48,12 @@ export default function ConversationsNavigation({
       }>
       <Space direction="vertical">
         {conversationsResponse?.rows.map((conversation) => (
-          <Button key={conversation.id} onClick={() => setCurrConversation(conversation)}>
-            {getConversationDisplayName(conversation)}
-          </Button>
+          <Account
+            key={conversation.id}
+            name={getConversationDisplayName(conversation)}
+            subtitle={conversation.lastMessage.text}
+            onClick={() => setCurrConversation(conversation)}
+          />
         ))}
       </Space>
     </Card>
