@@ -1,8 +1,8 @@
 import React from 'react';
+import { Col, Divider, Row } from 'antd';
 import { AccountType, SetAccountType } from '../../utils/types';
 import ConversationsNavigation from './navigation';
 import Chat from './chat';
-import { StyledConversationsContainer } from './StyledConversations';
 
 type ConversationsProps = {
   account: AccountType;
@@ -11,10 +11,17 @@ type ConversationsProps = {
 
 function Conversations({ account, setAccount }: ConversationsProps) {
   return (
-    <StyledConversationsContainer>
-      <ConversationsNavigation account={account} setAccount={setAccount} />
-      <Chat />
-    </StyledConversationsContainer>
+    <Row>
+      <Col span={6}>
+        <ConversationsNavigation account={account} setAccount={setAccount} />
+      </Col>
+      <Col span={2}>
+        <Divider type="vertical" style={{ height: '100%' }} />
+      </Col>
+      <Col span={16}>
+        <Chat />
+      </Col>
+    </Row>
   );
 }
 

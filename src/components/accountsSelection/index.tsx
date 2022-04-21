@@ -1,9 +1,8 @@
-import { Typography } from 'antd';
+import { Col, Space, Typography } from 'antd';
 import React from 'react';
 import useFetch from 'react-fetch-hook';
 import { AccountType, SetAccountType } from '../../utils/types';
 import Loading from '../common/Loading';
-import { StyledAccountsContainer } from './\bStyledAccountsSelection';
 import Account from './Account';
 
 type AccountsSelectionProps = {
@@ -13,16 +12,20 @@ type AccountsSelectionProps = {
 function AccountsSelection({ setAccount }: AccountsSelectionProps) {
   const { isLoading, data: accounts } = useFetch<AccountType[]>('/api/accounts');
 
-  if (isLoading) return <Loading />;
   return (
-    <StyledAccountsContainer>
+    <Col style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <Typography.Title>Select an Account</Typography.Title>
-      {accounts &&
-        accounts.map((account) => {
-          const { name, id } = account;
-          return <Account name={name} subtitle={id} key={id} onClick={() => setAccount(account)} />;
-        })}
-    </StyledAccountsContainer>
+      {isLoading && <Loading />}
+      <Space style={{ display: 'flex', flexDirection: 'column' }}>
+        {accounts &&
+          accounts.map((account) => {
+            const { name, id } = account;
+            return (
+              <Account name={name} subtitle={id} onClick={() => setAccount(account)} key={id} />
+            );
+          })}
+      </Space>
+    </Col>
   );
 }
 

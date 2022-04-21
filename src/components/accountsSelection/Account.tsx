@@ -1,7 +1,6 @@
-import { Avatar, Button, Space, Typography } from 'antd';
+import { Avatar, Button, Col, Space, Typography } from 'antd';
 import React from 'react';
 import getInitials from '../../utils/getInitials';
-import { StyledAccountInfo } from './\bStyledAccountsSelection';
 
 type AccountProps = {
   name: string;
@@ -11,15 +10,13 @@ type AccountProps = {
 
 function Account({ name, subtitle, onClick }: AccountProps) {
   return (
-    <Button
-      onClick={onClick}
-      style={{ height: '4em', width: '12em', display: 'flex', flexDirection: 'row' }}>
-      <Space>
+    <Button onClick={onClick} style={{ height: '4em', width: '12em' }}>
+      <Space style={{ display: 'flex', flexDirection: 'row' }}>
         <Avatar size="large">{getInitials(name)}</Avatar>
-        <StyledAccountInfo>
+        <Col style={{ textAlign: 'left' }}>
           <Typography.Text strong>{name}</Typography.Text>
           <Typography>{subtitle}</Typography>
-        </StyledAccountInfo>
+        </Col>
       </Space>
     </Button>
   );
