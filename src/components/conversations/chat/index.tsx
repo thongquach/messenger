@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react';
 import useInfinityScroll from '../../../utils/useInfinityScroll';
+import Loading from '../../common/Loading';
 
 const ITEMS = [...Array(100)].map((_, index) => {
   return { id: `id-${index}`, displayName: `item ${index + 1}` };
@@ -44,7 +45,11 @@ function Chat() {
     <div ref={containerRef}>
       <h1>loaded: {items.length} </h1>
       <MyList items={items} />
-      {items.length < 1000 && <em ref={loadMoreRef}>loading…</em>}
+      {items.length < 1000 && (
+        <em ref={loadMoreRef}>
+          <Loading />
+        </em>
+      )}
     </div>
   );
 }
