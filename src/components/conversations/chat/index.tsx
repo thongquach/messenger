@@ -1,5 +1,5 @@
-import { Card, Empty } from 'antd';
-import React, { useReducer } from 'react';
+import { Card, Empty, Input } from 'antd';
+import React, { useReducer, useState } from 'react';
 import useFetch from 'react-fetch-hook';
 import { AccountType, ConversationType, MessageResponseType } from '../../../utils/types';
 import Loading from '../../common/Loading';
@@ -63,15 +63,19 @@ function Chat() {
 type ChatProps = {
   account: AccountType;
   conversation?: ConversationType;
+  submit: string;
 };
 
-function Chat({ account, conversation }: ChatProps) {
+function Chat({ account, conversation, submit }: ChatProps) {
   if (conversation === undefined) return <Empty />;
   const receiver = conversation.participants.find((p) => p.id !== account.id);
   if (receiver === undefined) return <Empty />;
 
   const { isLoading, data: messagesResponse } = useFetch<MessageResponseType>(
-    `/api/account/${account.id}/conversation/${conversation.id}/messages`
+    `/api/account/${account.id}/conversation/${conversation.id}/messages?pageSize=10`,
+    {
+      depends: [submit]
+    }
   );
   if (isLoading) return <Loading />;
 
