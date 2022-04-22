@@ -7,6 +7,8 @@ const periods = {
 };
 
 export default function formatTime(timeCreated: string): string {
+  if (!timeCreated) return '';
+
   const diff = Date.now() - Number(timeCreated);
 
   if (diff > periods.month) {
