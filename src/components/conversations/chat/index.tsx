@@ -60,6 +60,8 @@ function Chat() {
 }
 */
 
+const MESSAGE_PAGE_SIZE = 3;
+
 type ChatProps = {
   account: AccountType;
   conversation?: ConversationType;
@@ -70,36 +72,36 @@ function Chat({ account, conversation }: ChatProps) {
   const receiver = conversation.participants.find((p) => p.id !== account.id);
   if (receiver === undefined) return <Empty />;
 
-  const [value, setValue] = useState('');
-  const [submit, setSubmit] = useState(false);
+  const [currMessage, setCurrMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const requestOptions = {
     method: 'POST',
     headers: {
       accept: 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({ text: value })
+    body: JSON.stringify({ text: currMessage })
   };
-  const handleSubmit = () => {
-    if (!value) {
+  const sendMessage = () => {
+    if (!currMessage) {
       return;
     }
-    setSubmit(true);
+    setIsSubmitting(true);
 
     setTimeout(() => {
-      setSubmit(false);
-      setValue('');
+      setIsSubmitting(false);
+      setCurrMessage('');
     }, 1000);
   };
 
   useFetch(`/api/account/${account.id}/conversation/${conversation.id}/messages`, requestOptions, {
-    depends: [submit]
+    depends: [isSubmitting]
   });
 
   const { isLoading, data: messagesResponse } = useFetch<MessageResponseType>(
-    `/api/account/${account.id}/conversation/${conversation.id}/messages?pageSize=20`,
+    `/api/account/${account.id}/conversation/${conversation.id}/messages?pageSize=${MESSAGE_PAGE_SIZE}`,
     {
-      depends: [!submit]
+      depends: [!isSubmitting]
     }
   );
   if (isLoading) return <Loading />;
@@ -118,10 +120,10 @@ function Chat({ account, conversation }: ChatProps) {
         <Input.Group compact style={{ marginTop: '10px' }}>
           <Input
             style={{ width: 'calc(100% - 65px)' }}
-            onChange={(e) => setValue(e.target.value)}
-            value={value}
+            onChange={(e) => setCurrMessage(e.target.value)}
+            value={currMessage}
           />
-          <Button type="primary" onClick={handleSubmit}>
+          <Button type="primary" onClick={sendMessage}>
             Send
           </Button>
         </Input.Group>
