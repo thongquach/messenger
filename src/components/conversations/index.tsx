@@ -24,16 +24,13 @@ function Conversations({
 }: ConversationsProps) {
   return (
     <Row>
-      <Col span={6}>
+      <Col span={8}>
         <ConversationsNavigation
           account={account}
           conversation={conversation}
           setCurrAccount={setCurrAccount}
           setCurrConversation={setCurrConversation}
         />
-      </Col>
-      <Col span={2}>
-        <Divider type="vertical" style={{ height: '100%' }} />
       </Col>
       <Col span={16}>
         <Chat account={account} conversation={conversation} />
