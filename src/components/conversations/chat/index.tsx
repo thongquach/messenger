@@ -115,8 +115,16 @@ function Chat({ account, conversation }: ChatProps) {
               isOwnMessage={account.id === message.sender.id}
             />
           ))}
-        <Input onChange={(e) => setValue(e.target.value)} value={value} />
-        <Button onClick={handleSubmit}>Send</Button>
+        <Input.Group compact style={{ marginTop: '10px' }}>
+          <Input
+            style={{ width: 'calc(100% - 65px)' }}
+            onChange={(e) => setValue(e.target.value)}
+            value={value}
+          />
+          <Button type="primary" onClick={handleSubmit}>
+            Send
+          </Button>
+        </Input.Group>
       </Space>
     </Card>
   );
