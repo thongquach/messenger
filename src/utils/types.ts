@@ -11,8 +11,8 @@ export type MessageType = {
 };
 
 export type MessageResponseType = {
-  cursor_next: string;
-  cursor_prev: string;
+  cursor_next: string | null;
+  cursor_prev: string | null;
   rows: MessageType[];
   sort: 'NEWEST_FIRST';
 };

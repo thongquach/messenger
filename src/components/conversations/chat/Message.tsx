@@ -10,7 +10,7 @@ type MessageProps = {
 
 function Message({ message, isOwnMessage }: MessageProps) {
   const { text, sender, createdAt } = message;
-  const date = new Date(Number(createdAt));
+  const date = new Date(createdAt);
 
   return (
     <Space style={{ width: '100%', flexDirection: isOwnMessage ? 'row-reverse' : 'row' }}>

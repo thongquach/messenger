@@ -1,7 +1,12 @@
 import { Button, Card, Empty, Input, Space } from 'antd';
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useFetch from 'react-fetch-hook';
-import { AccountType, ConversationType, MessageResponseType } from '../../../utils/types';
+import {
+  AccountType,
+  ConversationType,
+  MessageResponseType,
+  MessageType
+} from '../../../utils/types';
 import Loading from '../../common/Loading';
 import ChatTitle from './ChatTitle';
 import Message from './Message';
@@ -60,7 +65,7 @@ function Chat() {
 }
 */
 
-const MESSAGE_PAGE_SIZE = 3;
+const MESSAGE_PAGE_SIZE = 10;
 
 type ChatProps = {
   account: AccountType;
@@ -72,16 +77,10 @@ function Chat({ account, conversation }: ChatProps) {
   const receiver = conversation.participants.find((p) => p.id !== account.id);
   if (receiver === undefined) return <Empty />;
 
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  let prevCursor: null | string = null;
   const [currMessage, setCurrMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ text: currMessage })
-  };
   const sendMessage = () => {
     if (!currMessage) {
       return;
@@ -94,29 +93,53 @@ function Chat({ account, conversation }: ChatProps) {
     }, 1000);
   };
 
-  useFetch(`/api/account/${account.id}/conversation/${conversation.id}/messages`, requestOptions, {
-    depends: [isSubmitting]
-  });
+  useFetch(
+    `/api/account/${account.id}/conversation/${conversation.id}/messages`,
+    {
+      method: 'POST',
+      headers: {
+        accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ text: currMessage })
+    },
+    {
+      depends: [isSubmitting]
+    }
+  );
 
   const { isLoading, data: messagesResponse } = useFetch<MessageResponseType>(
-    `/api/account/${account.id}/conversation/${conversation.id}/messages?pageSize=${MESSAGE_PAGE_SIZE}`,
+    `/api/account/${account.id}/conversation/${
+      conversation.id
+    }/messages?pageSize=${MESSAGE_PAGE_SIZE}${prevCursor !== null ? `&cursor=${prevCursor}` : ''}`,
     {
       depends: [!isSubmitting]
     }
   );
-  if (isLoading) return <Loading />;
 
+  useEffect(() => {
+    setMessages([]);
+  }, [receiver]);
+
+  useEffect(() => {
+    setMessages([...(messagesResponse?.rows.reverse() || []), ...messages]);
+    prevCursor = messagesResponse?.cursor_prev || null;
+  }, [messagesResponse]);
+
+  if (isLoading) return <Loading />;
   return (
     <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
       <Space direction="vertical" style={{ width: '100%' }}>
-        {messagesResponse !== undefined &&
-          messagesResponse.rows.map((message) => (
+        {messages.map((message) => {
+          return (
             <Message
               message={message}
               key={message.id}
-              isOwnMessage={account.id === message.sender.id}
+              // eslint-disable-next-line eqeqeq
+              isOwnMessage={account.id == message.sender.id}
             />
-          ))}
+          );
+        })}
         <Input.Group compact style={{ marginTop: '10px' }}>
           <Input
             style={{ width: 'calc(100% - 65px)' }}
