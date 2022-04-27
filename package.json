@@ -2,7 +2,7 @@
   "name": "messenger",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:3000",
+  "proxy": "https://messenger-api.tung.ninja",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
     "@testing-library/jest-dom": "^5.16.4",
