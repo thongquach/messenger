@@ -10,6 +10,7 @@ import {
 import Loading from '../../common/Loading';
 import ChatTitle from './ChatTitle';
 import Message from './Message';
+import useInfinityScroll from './useInfinityScroll';
 
 /*
 const ITEMS = [...Array(100)].map((_, index) => {
@@ -117,6 +118,17 @@ function Chat({ account, conversation }: ChatProps) {
     }
   );
 
+  async function loadData() {
+    let url = `/api/account/${account.id}/conversation/${conversation.id}/messages`;
+    url += prevCursor !== null ? `&cursor=${prevCursor}` : '';
+
+    const response = await fetch(url);
+    const data = await response.json();
+    const newMessages = data.rows as MessageType[];
+
+    setMessages((msgs) => [...msgs, ...newMessages]);
+  }
+
   useEffect(() => {
     setMessages([]);
   }, [receiver]);
@@ -126,19 +138,27 @@ function Chat({ account, conversation }: ChatProps) {
     prevCursor = messagesResponse?.cursor_prev || null;
   }, [messagesResponse]);
 
+  const { loadMoreRef, containerRef } = useInfinityScroll(async () => {
+    console.log('load more');
+    await loadData();
+  });
+
   if (isLoading) return <Loading />;
   return (
     <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
       <Space direction="vertical" style={{ width: '100%' }}>
-        {messages.map((message) => {
-          return (
-            <Message
-              message={message}
-              key={message.id}
-              isOwnMessage={account.id === message.sender.id}
-            />
-          );
-        })}
+        <div ref={containerRef} style={{ height: `calc(100vh - 200px)`, overflow: 'auto' }}>
+          {messages.map((message) => {
+            return (
+              <Message
+                message={message}
+                key={message.id}
+                isOwnMessage={account.id === message.sender.id}
+              />
+            );
+          })}
+          <em ref={loadMoreRef}>load more</em>
+        </div>
         <Input.Group compact style={{ marginTop: '10px' }}>
           <Input
             style={{ width: 'calc(100% - 65px)' }}
