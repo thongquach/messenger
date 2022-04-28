@@ -25,7 +25,9 @@ function Message({ message, isOwnMessage }: MessageProps) {
         {text}
       </Typography.Text>
       <Typography.Text
-        style={{ color: 'dimgray' }}>{`${date.getHours()}:${date.getMinutes()}`}</Typography.Text>
+        style={{
+          color: 'dimgray'
+        }}>{`${date.getDate()}/${date.getMonth()} ${date.getHours()}:${date.getMinutes()}`}</Typography.Text>
     </Space>
   );
 }

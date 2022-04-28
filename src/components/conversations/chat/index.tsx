@@ -108,14 +108,11 @@ type ChatProps = {
   conversation?: ConversationType;
 };
 
-// const loadMoreTrigger = createTrigger();
-
 function Chat({ account, conversation }: ChatProps) {
   if (conversation === undefined) return <Empty />;
   const receiver = conversation.participants.find((p) => p.id !== account.id);
   if (receiver === undefined) return <Empty />;
 
-  // const loadMoreTriggerValue = useTrigger(loadMoreTrigger);
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [prevCursor, setPrevCursor] = useState<string | null>(null);
   const [currMessage, setCurrMessage] = useState('');
@@ -127,20 +124,18 @@ function Chat({ account, conversation }: ChatProps) {
 
   const { loadMoreRef, containerRef } = useInfinityScroll(loadMore);
 
-  const { isLoading, data: messagesResponse } = useFetch<MessagesResponseType>(
+  const { data: messagesResponse } = useFetch<MessagesResponseType>(
     `/api/account/${account.id}/conversation/${
       conversation.id
-    }/messages?pageSize=${MESSAGE_PAGE_SIZE}${prevCursor !== null ? `&cursor=${prevCursor}` : ''}`,
+    }/messages?pageSize=${MESSAGE_PAGE_SIZE}&sort=NEWEST_FIRST${
+      prevCursor !== null ? `&cursor=${prevCursor}` : ''
+    }`,
     { depends: [shouldLoad] }
   );
 
-  // useEffect(() => {
-  //   setMessages([]);
-  // }, [receiver]);
-
-  // useEffect(() => {
-  //   setTimeout(() => setShouldLoad(true), 5000);
-  // }, []);
+  useEffect(() => {
+    setMessages([]);
+  }, [receiver]);
 
   useEffect(() => {
     if (messagesResponse === undefined) return;
@@ -149,12 +144,9 @@ function Chat({ account, conversation }: ChatProps) {
     setShouldLoad(false);
   }, [messagesResponse]);
 
-  // if (isLoading) return <Loading />;
   return (
     <>
-      <div
-        ref={containerRef as any}
-        style={{ height: '500px', backgroundColor: 'red', overflow: 'auto' }}>
+      <div ref={containerRef as any} style={{ height: '1000px', overflow: 'auto' }}>
         {/* <Card title={<ChatTitle sender={account.name} receiver={receiver.name}  />}> */}
         {/* <Space direction="vertical" style={{ width: '100%' }}> */}
         {messages.map((message) => {
