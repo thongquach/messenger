@@ -10,7 +10,7 @@ export type MessageType = {
   createdAt: string;
 };
 
-export type MessageResponseType = {
+export type MessagesResponseType = {
   cursor_next: string | null;
   cursor_prev: string | null;
   rows: MessageType[];

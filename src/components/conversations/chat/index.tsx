@@ -4,7 +4,7 @@ import useFetch from 'react-fetch-hook';
 import {
   AccountType,
   ConversationType,
-  MessageResponseType,
+  MessagesResponseType,
   MessageType
 } from '../../../utils/types';
 import Loading from '../../common/Loading';
@@ -108,7 +108,7 @@ function Chat({ account, conversation }: ChatProps) {
     }
   );
 
-  const { isLoading, data: messagesResponse } = useFetch<MessageResponseType>(
+  const { isLoading, data: messagesResponse } = useFetch<MessagesResponseType>(
     `/api/account/${account.id}/conversation/${
       conversation.id
     }/messages?pageSize=${MESSAGE_PAGE_SIZE}${prevCursor !== null ? `&cursor=${prevCursor}` : ''}`,
@@ -135,8 +135,7 @@ function Chat({ account, conversation }: ChatProps) {
             <Message
               message={message}
               key={message.id}
-              // eslint-disable-next-line eqeqeq
-              isOwnMessage={account.id == message.sender.id}
+              isOwnMessage={account.id === message.sender.id}
             />
           );
         })}
