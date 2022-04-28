@@ -11,6 +11,7 @@ import {
 import Loading from '../../common/Loading';
 import Message from './Message';
 import useInfinityScroll from '../../../utils/useInfinityScroll';
+import ChatTitle from './ChatTitle';
 
 /* send message
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,8 +44,6 @@ import useInfinityScroll from '../../../utils/useInfinityScroll';
   );
 */
 
-const MESSAGE_PAGE_SIZE = 10;
-
 type ChatProps = {
   account: AccountType;
   conversation?: ConversationType;
@@ -57,64 +56,61 @@ function Chat({ account, conversation }: ChatProps) {
 
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [prevCursor, setPrevCursor] = useState<string | null>(null);
+  // const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [currMessage, setCurrMessage] = useState('');
   const [shouldLoad, setShouldLoad] = useState(false);
-
-  function loadMore() {
-    setShouldLoad(true);
-  }
-
-  const { loadMoreRef, containerRef } = useInfinityScroll(loadMore);
-
-  const { data: messagesResponse } = useFetch<MessagesResponseType>(
-    `/api/account/${account.id}/conversation/${
-      conversation.id
-    }/messages?pageSize=${MESSAGE_PAGE_SIZE}&sort=NEWEST_FIRST${
-      prevCursor !== null ? `&cursor=${prevCursor}` : ''
-    }`,
-    { depends: [shouldLoad] }
-  );
 
   useEffect(() => {
     setMessages([]);
   }, [receiver]);
 
+  async function loadMore() {
+    setShouldLoad(true);
+  }
+
+  const { data: messagesResponse } = useFetch<MessagesResponseType>(
+    `/api/account/${account.id}/conversation/${conversation.id}/messages${
+      prevCursor !== null ? `?cursor=${prevCursor}` : ''
+    }`,
+    { depends: [shouldLoad] }
+  );
+
   useEffect(() => {
     if (messagesResponse === undefined) return;
-    setMessages([...(messagesResponse?.rows.reverse() || []), ...messages]);
-    setPrevCursor(messagesResponse?.cursor_prev || null);
+    setMessages([...messages, ...messagesResponse.rows]);
+    setPrevCursor(messagesResponse.cursor_prev || null);
+    // setNextCursor(messagesResponse.cursor_next || null);
     setShouldLoad(false);
   }, [messagesResponse]);
 
+  const { loadMoreRef, containerRef } = useInfinityScroll(loadMore);
   return (
-    <>
-      <div ref={containerRef as any} style={{ height: '1000px', overflow: 'auto' }}>
-        {/* <Card title={<ChatTitle sender={account.name} receiver={receiver.name}  />}> */}
-        {/* <Space direction="vertical" style={{ width: '100%' }}> */}
-        {messages.map((message) => {
-          return (
-            <Message
-              message={message}
-              key={message.id}
-              isOwnMessage={account.id === message.sender.id}
-            />
-          );
-        })}
-        <em ref={loadMoreRef}>
-          <Loading />
-        </em>
-        {/* </Space> */}
-        {/* </Card> */}
-      </div>
-      <Input.Group compact style={{ marginTop: '10px' }}>
-        <Input
-          style={{ width: 'calc(100% - 65px)' }}
-          onChange={(e) => setCurrMessage(e.target.value)}
-          value={currMessage}
-        />
-        <Button type="primary">Send</Button>
-      </Input.Group>
-    </>
+    <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
+      <Space direction="vertical" style={{ width: '100%' }}>
+        <div ref={containerRef} style={{ height: `calc(100vh - 200px)`, overflow: 'auto' }}>
+          {messages.map((message) => {
+            return (
+              <Message
+                message={message}
+                key={message.id}
+                isOwnMessage={account.id === message.sender.id}
+              />
+            );
+          })}
+          <em ref={loadMoreRef}>
+            <Loading />
+          </em>
+        </div>
+        <Input.Group compact style={{ marginTop: '10px' }}>
+          <Input
+            style={{ width: 'calc(100% - 65px)' }}
+            onChange={(e) => setCurrMessage(e.target.value)}
+            value={currMessage}
+          />
+          <Button type="primary">Send</Button>
+        </Input.Group>
+      </Space>
+    </Card>
   );
 }
 

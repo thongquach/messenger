@@ -1,13 +1,12 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { RefCallback, useCallback, useEffect, useRef, useState } from 'react';
 
-export default function useInfinityScroll(onLoadMore) {
-  const observerRef = useRef(null);
-  const containerRef = useRef(null);
-  const sentryRef = useRef(null);
+export default function useInfinityScroll(onLoadMore: () => Promise<void>) {
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const sentryRef = useRef<HTMLDivElement | null>(null);
   const [visible, setVisible] = useState(false);
 
   // synchronize sentry visibility with loadMore "effect"
-  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (visible) {
       const id = setTimeout(onLoadMore, 50);
@@ -57,7 +56,7 @@ export default function useInfinityScroll(onLoadMore) {
   // this is the ref callback to attach on sentry JSX element
   // to avoid unnecessary rerender, we need to stablize this callback
   // react will unload and reload the callback ref if it changes
-  const loadMoreRefCallback = useCallback(
+  const loadMoreRefCallback: RefCallback<HTMLDivElement> = useCallback(
     (el) => {
       sentryRef.current = el;
 
@@ -68,7 +67,7 @@ export default function useInfinityScroll(onLoadMore) {
   );
 
   // this is the ref callback to attach on container JSX element
-  const containerRefCallback = useCallback(
+  const containerRefCallback: RefCallback<HTMLDivElement> = useCallback(
     (el) => {
       containerRef.current = el;
       unobserve();
