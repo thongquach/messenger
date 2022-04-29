@@ -13,7 +13,12 @@ function Message({ message, isOwnMessage }: MessageProps) {
   const date = new Date(createdAt);
 
   return (
-    <Space style={{ width: '100%', flexDirection: isOwnMessage ? 'row-reverse' : 'row' }}>
+    <Space
+      style={{
+        width: '100%',
+        flexDirection: isOwnMessage ? 'row-reverse' : 'row',
+        paddingBottom: '8px'
+      }}>
       <InitialsAvatar name={sender.name} size="large" />
       <Typography.Text
         style={{

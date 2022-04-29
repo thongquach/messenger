@@ -25,7 +25,6 @@ function Chat({ account, conversation }: ChatProps) {
 
   const [messages, setMessages] = useState<MessageType[]>([]);
   const [prevCursor, setPrevCursor] = useState<string | null>(null);
-
   const [currMessage, setCurrMessage] = useState('');
   const [shouldLoad, setShouldLoad] = useState(false);
   const [shouldSendMessage, setShouldSendMessage] = useState(false);
@@ -57,16 +56,19 @@ function Chat({ account, conversation }: ChatProps) {
   }
 
   const sendMessage = () => {
-    if (!currMessage) {
-      return;
-    }
+    if (!currMessage) return;
     setShouldSendMessage(true);
   };
 
   useEffect(() => {
     if (messagesResponse === undefined) return;
-    setMessages([...messages, ...messagesResponse.rows]);
-    setPrevCursor(messagesResponse.cursor_prev || null);
+    if (prevCursor === null) {
+      setMessages(messagesResponse.rows);
+      setPrevCursor(messagesResponse.cursor_prev);
+      return;
+    }
+    setMessages([...messages, ...messagesResponse.rows.reverse()]);
+    setPrevCursor(messagesResponse.cursor_next);
     setShouldLoad(false);
   }, [messagesResponse]);
 
@@ -78,6 +80,7 @@ function Chat({ account, conversation }: ChatProps) {
   }, [sentMessage]);
 
   useEffect(() => {
+    if (!receiver) return;
     setMessages([]);
   }, [receiver]);
 
@@ -86,21 +89,26 @@ function Chat({ account, conversation }: ChatProps) {
   return (
     <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
       <Space direction="vertical" style={{ width: '100%' }}>
-        <div ref={containerRef} style={{ height: `calc(100vh - 200px)`, overflow: 'auto' }}>
-          <Space direction="vertical" style={{ width: '100%' }}>
-            {messages.map((message) => {
-              return (
-                <Message
-                  message={message}
-                  key={message.id}
-                  isOwnMessage={account.id === message.sender.id}
-                />
-              );
-            })}
-            <em ref={loadMoreRef}>
-              <Loading />
-            </em>
-          </Space>
+        <div
+          ref={containerRef}
+          style={{
+            height: `calc(100vh - 200px)`,
+            overflow: 'auto',
+            display: 'flex',
+            flexDirection: 'column-reverse'
+          }}>
+          {messages.map((message) => {
+            return (
+              <Message
+                message={message}
+                key={message.id}
+                isOwnMessage={account.id === message.sender.id}
+              />
+            );
+          })}
+          <em ref={loadMoreRef}>
+            <Loading />
+          </em>
         </div>
         <Input.Group compact style={{ marginTop: '10px' }}>
           <Input
