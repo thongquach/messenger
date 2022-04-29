@@ -54,7 +54,7 @@ export default function useInfinityScroll(onLoadMore: () => Promise<void>) {
   }, []);
 
   // this is the ref callback to attach on sentry JSX element
-  // to avoid unnecessary rerender, we need to stablize this callback
+  // to avoid unnecessary rerender, we need to stabilize this callback
   // react will unload and reload the callback ref if it changes
   const loadMoreRefCallback: RefCallback<HTMLDivElement> = useCallback(
     (el) => {

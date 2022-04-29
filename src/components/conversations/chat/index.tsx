@@ -87,18 +87,20 @@ function Chat({ account, conversation }: ChatProps) {
     <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
       <Space direction="vertical" style={{ width: '100%' }}>
         <div ref={containerRef} style={{ height: `calc(100vh - 200px)`, overflow: 'auto' }}>
-          {messages.map((message) => {
-            return (
-              <Message
-                message={message}
-                key={message.id}
-                isOwnMessage={account.id === message.sender.id}
-              />
-            );
-          })}
-          <em ref={loadMoreRef}>
-            <Loading />
-          </em>
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {messages.map((message) => {
+              return (
+                <Message
+                  message={message}
+                  key={message.id}
+                  isOwnMessage={account.id === message.sender.id}
+                />
+              );
+            })}
+            <em ref={loadMoreRef}>
+              <Loading />
+            </em>
+          </Space>
         </div>
         <Input.Group compact style={{ marginTop: '10px' }}>
           <Input

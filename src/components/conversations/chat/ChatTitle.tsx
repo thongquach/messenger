@@ -1,4 +1,4 @@
-import { Avatar, Row, Typography } from 'antd';
+import { Avatar, Space, Typography } from 'antd';
 import React from 'react';
 import InitialsAvatar from '../../common/InitialsAvatar';
 
@@ -9,13 +9,13 @@ type ChatTitleProps = {
 
 function ChatTitle({ sender, receiver }: ChatTitleProps) {
   return (
-    <Row>
+    <Space>
       <Avatar.Group>
         <InitialsAvatar name={sender} />
         <InitialsAvatar name={receiver} />
       </Avatar.Group>
       <Typography.Text>conversation between You and {receiver}</Typography.Text>
-    </Row>
+    </Space>
   );
 }
 
