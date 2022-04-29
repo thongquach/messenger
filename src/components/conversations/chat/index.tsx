@@ -13,22 +13,31 @@ import Message from './Message';
 import useInfinityScroll from '../../../utils/useInfinityScroll';
 import ChatTitle from './ChatTitle';
 
-/* send message
+type ChatProps = {
+  account: AccountType;
+  conversation?: ConversationType;
+};
+
+function Chat({ account, conversation }: ChatProps) {
+  if (conversation === undefined) return <Empty />;
+  const receiver = conversation.participants.find((p) => p.id !== account.id);
+  if (receiver === undefined) return <Empty />;
+
+  const [messages, setMessages] = useState<MessageType[]>([]);
+  const [prevCursor, setPrevCursor] = useState<string | null>(null);
+
+  const [currMessage, setCurrMessage] = useState('');
+  const [shouldLoad, setShouldLoad] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const sendMessage = () => {
-    if (!currMessage) {
-      return;
-    }
-    setIsSubmitting(true);
+  const { data: messagesResponse } = useFetch<MessagesResponseType>(
+    `/api/account/${account.id}/conversation/${conversation.id}/messages${
+      prevCursor !== null ? `?cursor=${prevCursor}` : ''
+    }`,
+    { depends: [shouldLoad] }
+  );
 
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setCurrMessage('');
-    }, 1000);
-  };
-
-  useFetch(
+  const { isLoading, data: postData } = useFetch<MessageType>(
     `/api/account/${account.id}/conversation/${conversation.id}/messages`,
     {
       method: 'POST',
@@ -42,48 +51,38 @@ import ChatTitle from './ChatTitle';
       depends: [isSubmitting]
     }
   );
-*/
-
-type ChatProps = {
-  account: AccountType;
-  conversation?: ConversationType;
-};
-
-function Chat({ account, conversation }: ChatProps) {
-  if (conversation === undefined) return <Empty />;
-  const receiver = conversation.participants.find((p) => p.id !== account.id);
-  if (receiver === undefined) return <Empty />;
-
-  const [messages, setMessages] = useState<MessageType[]>([]);
-  const [prevCursor, setPrevCursor] = useState<string | null>(null);
-  // const [nextCursor, setNextCursor] = useState<string | null>(null);
-  const [currMessage, setCurrMessage] = useState('');
-  const [shouldLoad, setShouldLoad] = useState(false);
-
-  useEffect(() => {
-    setMessages([]);
-  }, [receiver]);
 
   async function loadMore() {
     setShouldLoad(true);
   }
 
-  const { data: messagesResponse } = useFetch<MessagesResponseType>(
-    `/api/account/${account.id}/conversation/${conversation.id}/messages${
-      prevCursor !== null ? `?cursor=${prevCursor}` : ''
-    }`,
-    { depends: [shouldLoad] }
-  );
+  const sendMessage = () => {
+    if (!currMessage) {
+      return;
+    }
+    setIsSubmitting(true);
+  };
 
   useEffect(() => {
     if (messagesResponse === undefined) return;
     setMessages([...messages, ...messagesResponse.rows]);
     setPrevCursor(messagesResponse.cursor_prev || null);
-    // setNextCursor(messagesResponse.cursor_next || null);
     setShouldLoad(false);
   }, [messagesResponse]);
 
+  useEffect(() => {
+    if (postData === undefined) return;
+    setMessages([postData, ...messages]);
+    setIsSubmitting(false);
+    setCurrMessage('');
+  }, [postData]);
+
+  useEffect(() => {
+    setMessages([]);
+  }, [receiver]);
+
   const { loadMoreRef, containerRef } = useInfinityScroll(loadMore);
+
   return (
     <Card title={<ChatTitle sender={account.name} receiver={receiver.name} />}>
       <Space direction="vertical" style={{ width: '100%' }}>
@@ -107,7 +106,9 @@ function Chat({ account, conversation }: ChatProps) {
             onChange={(e) => setCurrMessage(e.target.value)}
             value={currMessage}
           />
-          <Button type="primary">Send</Button>
+          <Button type="primary" onClick={sendMessage}>
+            Send
+          </Button>
         </Input.Group>
       </Space>
     </Card>
