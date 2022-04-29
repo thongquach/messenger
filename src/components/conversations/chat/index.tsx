@@ -28,7 +28,7 @@ function Chat({ account, conversation }: ChatProps) {
 
   const [currMessage, setCurrMessage] = useState('');
   const [shouldLoad, setShouldLoad] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [shouldSendMessage, setShouldSendMessage] = useState(false);
 
   const { data: messagesResponse } = useFetch<MessagesResponseType>(
     `/api/account/${account.id}/conversation/${conversation.id}/messages${
@@ -37,7 +37,7 @@ function Chat({ account, conversation }: ChatProps) {
     { depends: [shouldLoad] }
   );
 
-  const { isLoading, data: postData } = useFetch<MessageType>(
+  const { data: sentMessage } = useFetch<MessageType>(
     `/api/account/${account.id}/conversation/${conversation.id}/messages`,
     {
       method: 'POST',
@@ -48,7 +48,7 @@ function Chat({ account, conversation }: ChatProps) {
       body: JSON.stringify({ text: currMessage })
     },
     {
-      depends: [isSubmitting]
+      depends: [shouldSendMessage]
     }
   );
 
@@ -57,10 +57,10 @@ function Chat({ account, conversation }: ChatProps) {
   }
 
   const sendMessage = () => {
-    if (!currMessage) {
+    if (currMessage !== '') {
       return;
     }
-    setIsSubmitting(true);
+    setShouldSendMessage(true);
   };
 
   useEffect(() => {
@@ -71,11 +71,11 @@ function Chat({ account, conversation }: ChatProps) {
   }, [messagesResponse]);
 
   useEffect(() => {
-    if (postData === undefined) return;
-    setMessages([postData, ...messages]);
-    setIsSubmitting(false);
+    if (sentMessage === undefined) return;
+    setMessages([sentMessage, ...messages]);
     setCurrMessage('');
-  }, [postData]);
+    setShouldSendMessage(false);
+  }, [sentMessage]);
 
   useEffect(() => {
     setMessages([]);
