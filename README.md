@@ -4,14 +4,6 @@
 - Phat Tran - @costelo789
 - Quang Le - @quangdle
 
-## Backend
-
-In order to start this project, you should start [messenger-api](https://github.com/tungv/messenger-api) first by:
-
-- Clone the repo.
-- Run `yarn dev` or `npm run dev`.
-- Make sure the api server is running on port 3000.
-
 ## Available Scripts
 
 In the project directory, you can run:
