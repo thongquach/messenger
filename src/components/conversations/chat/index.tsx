@@ -57,7 +57,7 @@ function Chat({ account, conversation }: ChatProps) {
   }
 
   const sendMessage = () => {
-    if (currMessage !== '') {
+    if (!currMessage) {
       return;
     }
     setShouldSendMessage(true);
